@@ -1,24 +1,29 @@
 package Tree;
 
 public class ConstructTree {
-    public TreeNode insertLevelOrder(Integer[] arr, TreeNode root,
-                                 int i)
-    {
+    public TreeNode levelOrderConstruct(Integer[] array) {
         // Base case for recursion
-        if (i < arr.length) {
-            TreeNode temp = new TreeNode(arr[i]);
-            root = temp;
-
-            // insert left child
-            root.left = insertLevelOrder(arr, root.left,
-                    2 * i + 1);
-
-            // insert right child
-            root.right = insertLevelOrder(arr, root.right,
-                    2 * i + 2);
+        if (array == null || array.length == 0) {
+            return null;
         }
-        return root;
+        return construct(array, 0);
     }
+
+    private TreeNode construct(Integer[] array, int index) {
+        if (index < array.length) {
+            if (array[index] == null) {
+                return null;
+            }
+            TreeNode newNode = new TreeNode(array[index]);
+            newNode.left = construct(array, 2 * index + 1);
+            newNode.right = construct(array, 2 * index + 2);
+            return newNode;
+        }
+        return null;
+    }
+
+
+
 }
 // 0 1 2 3 4  5
 //       0

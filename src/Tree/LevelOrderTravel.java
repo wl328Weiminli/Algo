@@ -10,7 +10,7 @@ public class LevelOrderTravel {
         }
         Queue<TreeNode> queue = new ArrayDeque<>();
         queue.offer(root);
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             int size = queue.size();
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < size; i++) {
@@ -35,11 +35,12 @@ public class LevelOrderTravel {
         System.out.print(root.key);
         inorder(root.right);
     }
+
     public static void main(String[] args) {
         LevelOrderTravel test = new LevelOrderTravel();
         ConstructTree cons = new ConstructTree();
-        Integer[] arr = {0,1,2,3,4,5};
-        TreeNode root = cons.insertLevelOrder(arr, null, 0);
+        Integer[] arr = {6, 5, 4, null, 6, 1, 7, null, null, 10, null, null, null, null, null, null, null, null, null, null, null, null};
+        TreeNode root = cons.levelOrderConstruct(arr);
         test.levelOrderTravel(root);
     }
 }
