@@ -1,123 +1,119 @@
 package heap;
 
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.NoSuchElementException;
 
-public class MyHeapII {
-    private int[] array;
+public class MyHeapII<E> {
+    private E[] array;
     private int size;
+    private Comparator c;
 
-    public MyHeapII(int[] array) {
+    public MyHeapII(int cap, Comparator c) {
+        if (cap <= 0) {
+            throw new IllegalArgumentException("the capacity should greater than 0");
+        }
+        this.c = c;
+        array = (E[]) new Object[cap];
+        size = 0;
+    }
+
+    public MyHeapII(E[] array, Comparator c) {
         if (array == null || array.length == 0) {
-            throw new IllegalArgumentException("the array can not null or empty!");
+            throw new IllegalArgumentException("the input array length should greater than 0");
         }
         this.array = array;
+        this.c = c;
         size = array.length;
         heapify();
     }
 
-    public MyHeapII(int capacity) {
-        if (capacity <= 0) {
-            throw new IllegalArgumentException("the array length should greater or equal to 1!");
-        }
-        array = new int[capacity];
-        size = 0;
+
+
+    private int compare(E one, E two) {
+        return c.compare(one, two);
     }
 
-
     private void heapify() {
-        int index = size / 2 - 1;
-        while (index >= 0) {
-            percolateDown(index);
-            index--;
+        for (int i = size / 2 - 1; i >= 0; i--) {
+            percolateDown(i);
         }
     }
 
     private void percolateDown(int index) {
         while (index <= size / 2 - 1) {
-            int leftChildIndex = 2 * index + 1;
-            int rightChildIndex = 2 * index + 2;
-            int candidateIndex = leftChildIndex;
-            if (rightChildIndex < size && array[rightChildIndex] < array[leftChildIndex]) {
-                candidateIndex = rightChildIndex;
+            int leftChild = index * 2 + 1;
+            int rightChild = index * 2 + 2;
+            int candidate = leftChild;
+            if (rightChild < size && compare(array[leftChild], array[rightChild]) > 0 ) {
+                candidate = rightChild;
             }
-            if (array[index] < array[candidateIndex]) {
+            if (compare(array[index], array[candidate]) > 0) {
+                swap(index, candidate);
+                index = candidate;
+            }else {
                 break;
             }
-            swap(index, candidateIndex);
-            index = candidateIndex;
         }
 
     }
 
-
-    public void percolateUp(int index) {
+    private void percolateUp(int index) {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
-            if (array[index] < array[parentIndex]) {
+            if (compare(array[parentIndex], array[index]) <= 0) {
+                break;
+            }else {
                 swap(index, parentIndex);
                 index = parentIndex;
-            } else {
-                break;
             }
         }
-
     }
 
     private void swap(int i, int j) {
-        int temp = array[i];
+        E temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
 
-    public void offer(int value) {
+    public void offer(E value) {
         if (size == array.length) {
-            array = Arrays.copyOf(array, (int) (array.length * 1.5));
+            array = Arrays.copyOf(array, array.length * 2);
         }
         array[size] = value;
         size++;
         percolateUp(size - 1);
     }
 
+    public E peek() {
+        return array[0];
+    }
 
-    public Integer poll() {
+    public E poll() {
         if (size == 0) {
-            return null;
+            throw new NoSuchElementException("heap is Empty");
         }
-        int res = array[0];
+        E res = array[0];
         array[0] = array[size - 1];
         size--;
         percolateDown(0);
         return res;
     }
 
-
-    public Integer peek() {
-        if (size == 0) {
-            return null;
-        }
-        return array[0];
-    }
-
-    public Integer update(int value, int index) {
+    public E update(int index, E value) {
         if (index >= size || index < 0) {
-            return null;
+            throw new IllegalArgumentException("index shouldn't out of bound");
         }
-        int pre = array[index];
-        if (value < array[index]) {
-            array[index] = value;
-            percolateUp(index);
-        } else {
-            array[index] = value;
+        E pre = array[index];
+        array[index] = value;
+        if (compare(pre, value) > 0) {
             percolateDown(index);
+        }else {
+            percolateUp(index);
         }
         return pre;
     }
 
-    public int size() {
-        return size;
-    }
 
 
 }
-
-

@@ -34,9 +34,8 @@ public class MyHeap {
     }
 
     private void heapify() {
-        int index = (size - 2) / 2;
         for  (int i = size / 2 - 1; i >= 0; i--) {
-            percolateDown(index);
+            percolateDown(i);
         }
     }
 
